@@ -16,7 +16,7 @@
 
 ## 文件结构
 
-```groovy
+```xml
   root {
       //精简后的通用文件，供快速部署使用
       debug_BTlog.c
@@ -123,7 +123,9 @@ INS_IMUDataTypeDef* imu = Ins_GetIMUDataPtr();
 ADD_SEND_DATA(imu->angle.pitch, Float, "imu->angle.pitch");
 ```
 **直接以监控变量为参数，而不是指针**
+
 数据类型支持范围：BYTE uInt8 uInt16 uInt32 Float Char
+
 名称不应超过19个字符，超出会截断（19为暂定值）
 
 ------
