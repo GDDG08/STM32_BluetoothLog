@@ -1,11 +1,11 @@
 /*
  * @Project      : RM_Infantry_Neptune_frame
- * @FilePath     : \infantry_-neptuned:\BITRobot\RoboMaster2022\BTlog\debug_BTlog_forInfantry.c
+ * @FilePath     : \BTlog\debug_BTlog_forInfantry.c
  * @Descripttion : 
  * @Author       : GDDG08
  * @Date         : 2021-10-31 09:16:32
  * @LastEditors  : GDDG08
- * @LastEditTime : 2021-11-28 22:02:02
+ * @LastEditTime : 2021-11-30 00:24:05
  */
 
 #include "debug_BTlog.h"
@@ -219,19 +219,12 @@ void BTlog_DecodeData(uint8_t* BTlog_RxData, uint16_t rxdatalen) {
  * @return {*}
  */
 void BTlog_RXCallback(UART_HandleTypeDef* huart) {
-    /* clear DMA transfer complete flag */
     __HAL_DMA_DISABLE(huart->hdmarx);
-
-    /* handle dbus data dbus_buf from DMA */
-
     uint16_t rxdatalen = Const_BTlog_RX_BUFF_LEN_MAX - Uart_DMACurrentDataCounter(huart->hdmarx->Instance);
 
     BTlog_DecodeData(BTlog_RxData, rxdatalen);
-    //Referee_DecodeRefereeData(Referee_RxData, rxdatalen);
 
-    /* restart dma transmission */
     __HAL_DMA_SET_COUNTER(huart->hdmarx, Const_BTlog_RX_BUFF_LEN_MAX);
-    //HAL_DMA_Start(huart->hdmarx,(uint32_t)&huart->Instance->DR,(uint32_t)Referee_RxData,Const_Referee_RX_BUFF_LEN);
     __HAL_DMA_ENABLE(huart->hdmarx);
 }
 

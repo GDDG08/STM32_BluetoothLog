@@ -34,13 +34,15 @@
 
 蓝牙调试器需要新开或占用空闲串口进行通信
 
-**波特率：115200**
+如使用步兵上的两个蓝牙串口，则需配置如下
 
-**无奇偶校验**
+| **波特率**   | 115200 |
+| ------------ | ------ |
+| **字长**     | 8      |
+| **奇偶校验** | 无     |
+| **停止位**   | 1      |
 
-**字长8**
-
-**停止位1**
+注意：对于其他蓝牙串口硬件配置按实际进行即可，但需要使用AT指令**更改蓝牙名称为包含‘RoboMaster’字段**，才会在客户端被搜索到
 
 ------
 
@@ -83,11 +85,13 @@ UART_HandleTypeDef* Const_BTlog_UART_HANDLER = &huart6;
 
 #### 设定发送频率
 
+通过设定最小间隔（ms），调整连续调用时的发送频率
+
 ```c++
 const uint32_t Const_BTlog_HEART_SENT_PERIOD = 10;  // (ms)
 ```
 
-由于客户端数据稳定性与数据完整性处理未经大量设备环境测试，暂不建议使用过高频率（>500）
+由于蓝牙串口性能限制，以及客户端数据稳定性与数据完整性处理未经大量设备环境测试，暂不建议使用过高频率（>500）
 
 
 
@@ -132,15 +136,19 @@ ADD_SEND_DATA(imu->angle.pitch, Float, "imu->angle.pitch");
 
 
 
-- ## 数据接收
+- ### 数据接收
 
 ###### 由于Android客户端规划问题，暂时不开放相关用法，如有需求，请联系作者或提交Issue
+
+饼：看到了某dl的app写了自由界面，，，以后板载接收上会采用相同的数据格式，在我们的方案没成熟之前，先跳转到这个app使用（理论上这个APP无法接收我们发送的数据）
+
+[DL的博客](https://www.jianshu.com/p/1a8262492619)
 
 
 
 ## 注意事项
 
-- 发送频率不应过高
+- 发送频率不应过高，否则蓝牙可能阻塞
 
 
 
@@ -168,8 +176,8 @@ ADD_SEND_DATA(imu->angle.pitch, Float, "imu->angle.pitch");
    Even required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   Any one who has a or more GIRLFRIENDS SHOULD NOT use this file, 
-   untill the number comes to zero, 
+   Any one who has one or more GIRLFRIENDS SHOULD NOT use this file, 
+   until the number comes to zero, 
    either due to natural factor or human factor.
    See the License for the specific language governing permissions and
    limitations under the License.
