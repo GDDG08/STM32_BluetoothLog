@@ -12,6 +12,10 @@
 
 ****
 
+## 更新日志
+
+- 2021-11-30：新增自定义数据接收部分，可兼容蓝牙调试器APP
+
 
 
 ## 文件结构
@@ -110,7 +114,7 @@ const uint32_t Const_BTlog_HEART_SENT_PERIOD = 10;  // (ms)
 INS_IMUDataTypeDef* imu = Ins_GetIMUDataPtr();
 ```
 
-添加数据
+添加数据：ADD_SEND_DATA(...)
 
 ```c++
 /*
@@ -138,11 +142,15 @@ ADD_SEND_DATA(imu->angle.pitch, Float, "imu->angle.pitch");
 
 - ### 数据接收
 
-###### 由于Android客户端规划问题，暂时不开放相关用法，如有需求，请联系作者或提交Issue
+###### ~~由于Android客户端规划问题，暂时不开放相关用法，如有需求，请联系作者或提交Issue~~
 
-饼：看到了某dl的app写了自由界面，，，以后板载接收上会采用相同的数据格式，在我们的方案没成熟之前，先跳转到这个app使用（理论上这个APP无法接收我们发送的数据）
+~~饼：~~~~看到了某dl的app写了自由界面，，，以后~~板载接收上会采用相同的数据格式，在我们的方案没成熟之前，先跳转到这个app使用（理论上这个APP无法接收我们发送的数据）
 
 [DL的博客](https://www.jianshu.com/p/1a8262492619)
+
+数据接收初版已完成，请调用ADD_RECV_DATA(...)即可添加接受量
+
+注意，添加顺序必须和APP端配置完全相同
 
 
 

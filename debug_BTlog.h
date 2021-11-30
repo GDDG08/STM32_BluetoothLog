@@ -1,23 +1,18 @@
 /*
  * @Project      : RM_Infantry_Neptune_frame
- * @FilePath     : \infantry_-neptune\Core\Inc\Common_Contrrol\debug_BTlog.h
+ * @FilePath     : \BTlog\debug_BTlog.h
  * @Descripttion : 
  * @Author       : GDDG08
  * @Date         : 2021-10-31 09:17:07
  * @LastEditors  : GDDG08
- * @LastEditTime : 2021-11-07 10:46:31
+ * @LastEditTime : 2021-11-30 22:36:28
  */
-
-#ifndef DEBUG_BTLOG_H
-#define DEBUG_BTLOG_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #include "configure.h"
-
-#if __FN_IF_ENABLE(__FN_DEBUG_BTLOG)
 
 #include "uart_util.h"
 #include "buff_lib.h"
@@ -53,10 +48,9 @@ extern UART_HandleTypeDef* Const_BTlog_UART_HANDLER;
 void BTlog_Init(void);
 void BTlog_Send(void);
 void BTlog_RXCallback(UART_HandleTypeDef*);
-#endif
+uint8_t BTLog_VerifyData(uint8_t*, uint16_t);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif

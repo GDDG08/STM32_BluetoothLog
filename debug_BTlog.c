@@ -1,16 +1,17 @@
 /*
  * @Project      : RM_Infantry_Neptune_frame
- * @FilePath     : \infantry_-neptuned:\BITRobot\RoboMaster2022\BTlog\debug_BTlog.c
+ * @FilePath     : \BTlog\debug_BTlog.c
  * @Descripttion : 
  * @Author       : GDDG08
  * @Date         : 2021-10-31 09:16:32
  * @LastEditors  : GDDG08
- * @LastEditTime : 2021-11-28 22:00:27
+ * @LastEditTime : 2021-11-30 22:44:05
  */
 
 #include "debug_BTlog.h"
 
 #define ADD_SEND_DATA(x, y, z) AddSendData(&x, sizeof(x), y, z)
+#define ADD_RECV_DATA(x, y) AddRecvData(&x, sizeof(x), y)
 
 /*
 * TODO: 
@@ -28,22 +29,30 @@ const uint8_t Const_BTlog_ID = 0x03;
 *   change send break for logging rate
 */
 const uint32_t Const_BTlog_HEART_SENT_PERIOD = 10;  // (ms)
-
-const uint16_t Const_BTlog_RX_BUFF_LEN_MAX = 200;
+const uint16_t Const_BTlog_RX_BUFF_LEN_MAX = 5000;
 const uint16_t Const_BTlog_TX_BUFF_LEN_MAX = 5000;
-const uint16_t Const_BTlog_TX_DATA_LEN_MAX = 20;
+const uint16_t Const_BTlog_RX_DATA_LEN_MAX = 50;
+const uint16_t Const_BTlog_TX_DATA_LEN_MAX = 50;
+
 uint8_t BTlog_RxData[Const_BTlog_RX_BUFF_LEN_MAX];
 uint8_t BTlog_TxData[Const_BTlog_TX_BUFF_LEN_MAX];
+BTlog_TableEntry BTlog_Send_Data[Const_BTlog_TX_DATA_LEN_MAX];
+BTlog_TableEntry BTlog_Recv_Data[Const_BTlog_RX_DATA_LEN_MAX];
+
 uint8_t BTlog_state_pending = 0;
 uint8_t BTlog_state_sending = 0;
 BTlog_TableEntry BTlog_Send_Data[Const_BTlog_TX_DATA_LEN_MAX];
 
 uint8_t BTlog_startFlag = 0xfa;
 char BTlog_endFlag[] = "@\r\n";
+uint8_t BTlog_Recv_endFlag = 0x5a;
 
 //StartFlag, Head and EndFlag
 uint16_t BTlog_TX_BUFF_LEN = 3 + 1 + 3;
 uint16_t BTlog_TX_DATA_LEN = 0;
+//Head Checksum and EndFlag
+uint16_t BTlog_RX_BUFF_LEN = 1 + 1 + 1;
+uint16_t BTlog_RX_DATA_LEN = 0;
 
 uint32_t BTlog_time = 0;
 
@@ -66,6 +75,23 @@ void AddSendData(void* ptr, uint8_t size, BTlog_TypeEnum type, char* tag) {
 }
 
 /**
+ * @name: anonymous
+ * @msg: 
+ * @param {void*} ptr
+ * @param {uint8_t} size
+ * @param {BTlog_TypeEnum} type
+ * @param {char*} tag
+ * @return {*}
+ */
+void AddRecvData(void* ptr, uint8_t size, BTlog_TypeEnum type) {
+    BTlog_Recv_Data[BTlog_RX_DATA_LEN].ptr = ptr;
+    BTlog_Recv_Data[BTlog_RX_DATA_LEN].size = size;
+    BTlog_Recv_Data[BTlog_RX_DATA_LEN].type = type;
+    BTlog_RX_BUFF_LEN += size;
+    BTlog_RX_DATA_LEN++;
+}
+
+/**
  * @name: INIT
  * @test: TODO: Add to init
  * @msg: 
@@ -79,6 +105,7 @@ void BTlog_Init() {
     * eg. INS_IMUDataTypeDef* imu = Ins_GetIMUDataPtr();
     */
 
+    //Log Data Send
     ADD_SEND_DATA(BTlog_time, uInt32, "current_time");
 
     /*
@@ -93,6 +120,18 @@ void BTlog_Init() {
     * 
     */
 
+    //Customize Remote Control Receive
+
+    /*
+    * TODO: 
+    *   ADD_RECV_DATA(%the varible%, %type%)
+    *       Types currently supported:
+    *           BYTE uInt8 uInt16 uInt32 Float Char 
+    * 
+    * eg.    ADD_RECV_DATA(Chassis_Gyro_compensate[0], Float);
+    * eg.    ADD_RECV_DATA(minipc->pitch_offset, Float);
+    * 
+    */
     Uart_InitUartDMA(Const_BTlog_UART_HANDLER);
     Uart_ReceiveDMA(Const_BTlog_UART_HANDLER, BTlog_RxData, Const_BTlog_RX_BUFF_LEN_MAX);
 }
@@ -137,6 +176,7 @@ const uint8_t CMD_GET_STRUCT = 0xFF;
 const uint8_t CMD_START_SENDING = 0xF1;
 const uint8_t CMD_STOP_SENDING = 0xF2;
 // const uint8_t CMD_SET_GYRO_COMPENSATE = 0xA0;
+const uint8_t CMD_SET_CUSTOMIZE = 0xA5;
 
 /**
  * @name: DECODE
@@ -177,7 +217,40 @@ void BTlog_DecodeData(uint8_t* BTlog_RxData, uint16_t rxdatalen) {
             Chassis_Gyro_compensate[3] = buff2float(BTlog_RxData + 13);
         }*/
         BTlog_state_pending = 0;
+    } else {
+        if (BTlog_RxData[0] == CMD_SET_CUSTOMIZE) {
+            //check
+            if (BTLog_VerifyData(BTlog_RxData, rxdatalen)) {
+                uint8_t* buff = BTlog_RxData;
+                int cur_pos = 1;
+                for (uint16_t i = 0; i < BTlog_RX_DATA_LEN; i++) {
+                    uint8_t size = BTlog_Recv_Data[i].size;
+                    memcpy(BTlog_Recv_Data[i].ptr, buff + cur_pos, size);
+                    cur_pos += size;
+                }
+            }
+        }
     }
+}
+/**
+  * @brief      Data Checksum Verify
+  * @param      buff: Data buffer
+  * @param      rxdatalen: recevie data length
+  * @retval     Match is 1  not match is 0
+  */
+
+uint8_t BTLog_VerifyData(uint8_t* buff, uint16_t rxdatalen) {
+    if (rxdatalen != BTlog_RX_BUFF_LEN)
+        return 0;
+    if (buff[0] != CMD_SET_CUSTOMIZE || buff[rxdatalen - 1] != BTlog_Recv_endFlag)
+        return 0;
+
+    uint8_t sum = buff[rxdatalen - 2];
+    uint32_t checksum = 0;
+    for (int i = 1; i < rxdatalen - 2; i++)
+        checksum += buff[i];
+    checksum = checksum & 0xff;
+    return checksum == sum;
 }
 
 /**
