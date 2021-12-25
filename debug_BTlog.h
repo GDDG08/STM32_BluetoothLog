@@ -5,25 +5,17 @@
  * @Author       : GDDG08
  * @Date         : 2021-10-31 09:17:07
  * @LastEditors  : GDDG08
- * @LastEditTime : 2021-11-30 22:36:28
+ * @LastEditTime : 2021-12-25 16:03:07
  */
+#ifndef DEBUG_BTLOG_H
+#define DEBUG_BTLOG_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "configure.h"
-
 #include "uart_util.h"
-#include "buff_lib.h"
-#include "const.h"
-#include "gpio_util.h"
-#include "buscomm_ctrl.h"
 
-// const uint16_t
-//     LEN_ui8 = 1,
-//     LEN_ui16 = 2,
-//     LEN_ui8
 typedef enum {
     BYTE = 0u,
     uInt8 = 1u,
@@ -54,3 +46,4 @@ uint8_t BTLog_VerifyData(uint8_t*, uint16_t);
 }
 #endif
 
+#endif
