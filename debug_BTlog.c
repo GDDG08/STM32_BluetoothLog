@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-10-31 09:16:32
  * @LastEditors  : GDDG08
- * @LastEditTime : 2021-11-30 22:44:05
+ * @LastEditTime : 2022-01-18 17:11:42
  */
 
 #include "debug_BTlog.h"
@@ -112,7 +112,7 @@ void BTlog_Init() {
     * TODO: 
     *   ADD_SEND_DATA(%the varible%, %type%, %show_name%)
     *       Types currently supported:
-    *           BYTE uInt8 uInt16 uInt32 Float Char 
+    *           BYTE uInt8 uInt16 uInt32 Float Char Int8 Int16 Int32
     *       #Note that show_name should be no longer than 19 letters#
     * 
     * eg.    ADD_SEND_DATA(imu->angle.pitch, Float, "imu->angle.pitch");
@@ -126,7 +126,7 @@ void BTlog_Init() {
     * TODO: 
     *   ADD_RECV_DATA(%the varible%, %type%)
     *       Types currently supported:
-    *           BYTE uInt8 uInt16 uInt32 Float Char 
+    *           BYTE uInt8 uInt16 uInt32 Float Char Int8 Int16 Int32
     * 
     * eg.    ADD_RECV_DATA(Chassis_Gyro_compensate[0], Float);
     * eg.    ADD_RECV_DATA(minipc->pitch_offset, Float);

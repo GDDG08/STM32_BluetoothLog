@@ -5,7 +5,7 @@
  * @Author       : GDDG08
  * @Date         : 2021-10-31 09:17:07
  * @LastEditors  : GDDG08
- * @LastEditTime : 2021-12-25 16:03:07
+ * @LastEditTime : 2022-01-18 14:20:25
  */
 #ifndef DEBUG_BTLOG_H
 #define DEBUG_BTLOG_H
@@ -22,7 +22,10 @@ typedef enum {
     uInt16 = 2u,
     uInt32 = 3u,
     Float = 4u,
-    Char = 5u
+    Char = 5u,
+    Int8 = 6u,
+    Int16 = 7u,
+    Int32 = 8u
 } BTlog_TypeEnum;
 
 #define BTlog_tagSize 19

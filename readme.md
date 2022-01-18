@@ -16,6 +16,7 @@
 
 - 2021-11-30：新增自定义数据接收部分，可兼容蓝牙调试器APP
 - 2021-12-25：优化头文件，便于集成
+- 2022-01-18：新增Int8，Int16，Int32数据类型，需搭配DreamChaser Debugger V2.0+使用
 
 
 
@@ -126,7 +127,7 @@ INS_IMUDataTypeDef* imu = Ins_GetIMUDataPtr();
     * TODO: 
     *   ADD_SEND_DATA(%the varible%, %type%, %show_name%)
     *       Types currently supported:
-    *           BYTE uInt8 uInt16 uInt32 Float Char 
+    *           BYTE uInt8 uInt16 uInt32 Float Char Int8 Int16 Int32
     *       #Note that show_name should be no longer than 19 letters#
     * 
     * eg.    ADD_SEND_DATA(imu->angle.pitch, Float, "imu->angle.pitch");
@@ -137,7 +138,7 @@ ADD_SEND_DATA(imu->angle.pitch, Float, "imu->angle.pitch");
 ```
 **直接以监控变量为参数，而不是指针**
 
-数据类型支持范围：BYTE uInt8 uInt16 uInt32 Float Char
+数据类型支持范围：BYTE uInt8 uInt16 uInt32 Float Char Int8 Int16 Int32
 
 名称不应超过19个字符，超出会截断（19为暂定值）
 
