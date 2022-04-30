@@ -5,13 +5,13 @@
  * @Author       : GDDG08
  * @Date         : 2021-10-31 09:16:32
  * @LastEditors  : GDDG08
- * @LastEditTime : 2022-01-18 17:11:42
+ * @LastEditTime : 2022-04-30 10:36:47
  */
 
 #include "debug_BTlog.h"
 
-#define ADD_SEND_DATA(x, y, z) AddSendData(&x, sizeof(x), y, z)
-#define ADD_RECV_DATA(x, y) AddRecvData(&x, sizeof(x), y)
+#define ADD_SEND_DATA(x, y, z) AddSendData(&(x), sizeof(x), y, z)
+#define ADD_RECV_DATA(x, y) AddRecvData(&(x), sizeof(x), y)
 
 /*
 * TODO: 
